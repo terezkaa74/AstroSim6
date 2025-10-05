@@ -1,6 +1,9 @@
-import { Flame, Skull, AlertTriangle, Mountain, Wind, TreeDeciduous } from 'lucide-react';
+import { useState } from 'react';
+import { Flame, Skull, AlertTriangle, Mountain, Wind, TreeDeciduous, Play, RotateCcw } from 'lucide-react';
 
 export default function LandImpact() {
+  const [showResults, setShowResults] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="bg-red-900/30 border-2 border-red-700 rounded-lg p-6">
@@ -11,13 +14,45 @@ export default function LandImpact() {
             <p className="text-red-300">Central United States (40°N, 100°W) - Agricultural Heartland</p>
           </div>
         </div>
+        <p className="text-slate-300 text-sm mt-4">
+          This scenario models a direct Bennu impact on land, showing the complete destruction zones,
+          crater formation, seismic effects, and long-term environmental consequences.
+        </p>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-6 shadow-xl">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <Flame className="text-orange-500" size={24} />
-          Immediate Impact Effects
-        </h3>
+      {!showResults ? (
+        <div className="bg-slate-800 rounded-lg p-12 shadow-xl flex flex-col items-center justify-center min-h-[400px]">
+          <Mountain size={64} className="mx-auto mb-6 text-red-400 opacity-50" />
+          <h3 className="text-2xl font-bold text-white mb-3">Land Impact Analysis</h3>
+          <p className="text-slate-400 text-center mb-8 max-w-md">
+            Run the simulation to see detailed predictions of a Bennu impact on the central United States,
+            including destruction zones, crater formation, and environmental effects.
+          </p>
+          <button
+            onClick={() => setShowResults(true)}
+            className="flex items-center gap-2 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-lg transition-all transform hover:scale-105"
+          >
+            <Play size={24} />
+            Run Impact Simulation
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowResults(false)}
+              className="flex items-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg transition-all"
+            >
+              <RotateCcw size={20} />
+              Reset Simulation
+            </button>
+          </div>
+
+          <div className="bg-slate-800 rounded-lg p-6 shadow-xl">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Flame className="text-orange-500" size={24} />
+              Immediate Impact Effects
+            </h3>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="bg-red-900/20 border border-red-700 rounded-lg p-4">
             <div className="text-red-400 font-semibold mb-2">Total Energy Release</div>
@@ -228,6 +263,8 @@ export default function LandImpact() {
           time (10+ years), even small deflection forces can prevent this catastrophe entirely.
         </p>
       </div>
+        </>
+      )}
     </div>
   );
 }

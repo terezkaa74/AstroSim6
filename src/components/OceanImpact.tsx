@@ -1,6 +1,9 @@
-import { Waves, Flame, Ship, AlertTriangle, Wind, Droplets } from 'lucide-react';
+import { useState } from 'react';
+import { Waves, Flame, Ship, AlertTriangle, Wind, Droplets, Play, RotateCcw } from 'lucide-react';
 
 export default function OceanImpact() {
+  const [showResults, setShowResults] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="bg-blue-900/30 border-2 border-blue-700 rounded-lg p-6">
@@ -11,18 +14,51 @@ export default function OceanImpact() {
             <p className="text-blue-300">Atlantic Ocean (33°N, 65°W) - Between New York and Bermuda</p>
           </div>
         </div>
-        <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4 mt-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Droplets className="text-blue-400" size={20} />
-            <span className="text-blue-400 font-semibold">Water Depth</span>
-          </div>
-          <div className="text-3xl font-bold text-white">5,000-6,000 meters</div>
-          <div className="text-blue-300 text-sm mt-1">Deep abyssal plain - maximum energy transfer to water</div>
-        </div>
+        <p className="text-slate-300 text-sm mt-4">
+          This scenario models a Bennu impact in the deep Atlantic Ocean, showing tsunami formation,
+          wave propagation, coastal inundation, and trans-oceanic consequences.
+        </p>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-6 shadow-xl">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+      {!showResults ? (
+        <div className="bg-slate-800 rounded-lg p-12 shadow-xl flex flex-col items-center justify-center min-h-[400px]">
+          <Waves size={64} className="mx-auto mb-6 text-blue-400 opacity-50" />
+          <h3 className="text-2xl font-bold text-white mb-3">Ocean Impact Analysis</h3>
+          <p className="text-slate-400 text-center mb-8 max-w-md">
+            Run the simulation to see detailed predictions of a Bennu impact in the Atlantic Ocean,
+            including tsunami formation, wave propagation, and coastal devastation.
+          </p>
+          <button
+            onClick={() => setShowResults(true)}
+            className="flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-all transform hover:scale-105"
+          >
+            <Play size={24} />
+            Run Impact Simulation
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowResults(false)}
+              className="flex items-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg transition-all"
+            >
+              <RotateCcw size={20} />
+              Reset Simulation
+            </button>
+          </div>
+
+          <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Droplets className="text-blue-400" size={20} />
+              <span className="text-blue-400 font-semibold">Water Depth</span>
+            </div>
+            <div className="text-3xl font-bold text-white">5,000-6,000 meters</div>
+            <div className="text-blue-300 text-sm mt-1">Deep abyssal plain - maximum energy transfer to water</div>
+          </div>
+
+          <div className="bg-slate-800 rounded-lg p-6 shadow-xl">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
           <Flame className="text-orange-500" size={24} />
           Immediate Impact Effects
         </h3>
@@ -279,6 +315,8 @@ export default function OceanImpact() {
           equally catastrophic. Early detection and deflection remain our only defense against such scenarios.
         </p>
       </div>
+        </>
+      )}
     </div>
   );
 }
