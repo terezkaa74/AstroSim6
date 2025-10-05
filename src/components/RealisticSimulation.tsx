@@ -10,8 +10,7 @@ export default function RealisticSimulation() {
   const [params, setParams] = useState<SimulationParams>({
     diameter: BENNU_DATA.diameter,
     velocity: 12.7,
-    deflectionForce: 2.5,
-    approachAngle: 45
+    deflectionForce: 2.5
   });
 
   const [timeBeforeImpact, setTimeBeforeImpact] = useState(10);
@@ -23,8 +22,7 @@ export default function RealisticSimulation() {
     setParams({
       diameter: BENNU_DATA.diameter,
       velocity: 12.7,
-      deflectionForce: 2.5,
-      approachAngle: 45
+      deflectionForce: 2.5
     });
     setTimeBeforeImpact(10);
     setHasRun(false);
@@ -82,12 +80,10 @@ export default function RealisticSimulation() {
           diameter={params.diameter}
           velocity={params.velocity}
           deflectionForce={params.deflectionForce}
-          approachAngle={params.approachAngle}
           timeBeforeImpact={timeBeforeImpact}
           onDiameterChange={(value) => setParams({ ...params, diameter: value })}
           onVelocityChange={(value) => setParams({ ...params, velocity: value })}
           onDeflectionChange={(value) => setParams({ ...params, deflectionForce: value })}
-          onAngleChange={(value) => setParams({ ...params, approachAngle: value })}
           onTimeChange={setTimeBeforeImpact}
         />
 

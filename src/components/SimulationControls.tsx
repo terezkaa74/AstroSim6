@@ -4,12 +4,10 @@ interface SimulationControlsProps {
   diameter: number;
   velocity: number;
   deflectionForce: number;
-  approachAngle: number;
   timeBeforeImpact: number;
   onDiameterChange: (value: number) => void;
   onVelocityChange: (value: number) => void;
   onDeflectionChange: (value: number) => void;
-  onAngleChange: (value: number) => void;
   onTimeChange: (value: number) => void;
 }
 
@@ -17,12 +15,10 @@ export default function SimulationControls({
   diameter,
   velocity,
   deflectionForce,
-  approachAngle,
   timeBeforeImpact,
   onDiameterChange,
   onVelocityChange,
   onDeflectionChange,
-  onAngleChange,
   onTimeChange
 }: SimulationControlsProps) {
   return (
@@ -96,26 +92,6 @@ export default function SimulationControls({
           <p className="text-xs text-slate-400 mt-2">
             This represents the velocity change imparted by a kinetic impactor or nuclear device
           </p>
-        </div>
-
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="text-slate-300 font-medium">Approach Angle</label>
-            <span className="text-blue-400 font-mono font-bold">{approachAngle}°</span>
-          </div>
-          <input
-            type="range"
-            min="15"
-            max="90"
-            step="1"
-            value={approachAngle}
-            onChange={(e) => onAngleChange(parseFloat(e.target.value))}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-          />
-          <div className="flex justify-between text-xs text-slate-500 mt-1">
-            <span>15° (Grazing)</span>
-            <span>90° (Vertical)</span>
-          </div>
         </div>
 
         <div>

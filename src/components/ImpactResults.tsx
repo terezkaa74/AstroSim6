@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle, Zap, Skull } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Zap, Skull, Waves, Flame } from 'lucide-react';
 import { ImpactResult } from '../physics/impactCalculations';
 import { energyToMegatons } from '../physics/impactCalculations';
 
@@ -15,7 +15,7 @@ export default function ImpactResults({ result }: ImpactResultsProps) {
         {result.willImpact ? (
           <>
             <AlertTriangle className="text-red-500" size={32} />
-            <h3 className="text-2xl font-bold text-white">Impact Analysis</h3>
+            <h3 className="text-2xl font-bold text-white">Impact Consequences</h3>
           </>
         ) : (
           <>
@@ -35,55 +35,155 @@ export default function ImpactResults({ result }: ImpactResultsProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-slate-900 p-4 rounded-lg">
-          <div className="text-slate-400 text-sm mb-1">Impact Energy</div>
-          <div className="text-white text-xl font-bold flex items-center gap-2">
-            <Zap size={20} className="text-yellow-400" />
-            {megatons.toFixed(0)} MT
+      {!result.willImpact && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-slate-900 p-4 rounded-lg">
+            <div className="text-slate-400 text-sm mb-1">Miss Distance</div>
+            <div className="text-green-400 text-xl font-bold">
+              {Math.abs(result.missDistance).toFixed(0)} km
+            </div>
+            <div className="text-slate-500 text-xs mt-1">Safe passage</div>
           </div>
-          <div className="text-slate-500 text-xs mt-1">
-            {(result.impactEnergy / 1e15).toFixed(2)} × 10¹⁵ J
+
+          <div className="bg-slate-900 p-4 rounded-lg">
+            <div className="text-slate-400 text-sm mb-1">Energy Avoided</div>
+            <div className="text-white text-xl font-bold flex items-center gap-2">
+              <Zap size={20} className="text-yellow-400" />
+              {megatons.toFixed(0)} MT
+            </div>
+            <div className="text-slate-500 text-xs mt-1">
+              {(result.impactEnergy / 1e15).toFixed(2)} × 10¹⁵ J
+            </div>
+          </div>
+
+          <div className="bg-slate-900 p-4 rounded-lg">
+            <div className="text-slate-400 text-sm mb-1">Lives Saved</div>
+            <div className="text-green-400 text-xl font-bold">8 Billion</div>
+            <div className="text-slate-500 text-xs mt-1">Global population</div>
           </div>
         </div>
+      )}
 
-        <div className="bg-slate-900 p-4 rounded-lg">
-          <div className="text-slate-400 text-sm mb-1">Miss Distance</div>
-          <div className={`text-xl font-bold ${
-            result.willImpact ? 'text-red-400' : 'text-green-400'
-          }`}>
-            {Math.abs(result.missDistance).toFixed(0)} km
-          </div>
-          <div className="text-slate-500 text-xs mt-1">
-            {result.willImpact ? 'Direct impact' : 'Safe passage'}
+      {result.willImpact && result.consequences && (
+        <div className="mb-6">
+          <div className="bg-red-900/20 border-2 border-red-700 rounded-lg p-6 mb-4">
+            <h4 className="text-red-400 font-bold text-lg mb-4 flex items-center gap-2">
+              {result.locationType === 'ocean' ? <Waves size={24} /> : <Flame size={24} />}
+              {result.locationType === 'ocean' ? 'Deep Ocean Impact' : 'Inland Impact'}
+            </h4>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="bg-slate-900 p-4 rounded-lg">
+                <div className="text-slate-400 text-sm mb-1">Total Energy</div>
+                <div className="text-red-400 text-xl font-bold flex items-center gap-2">
+                  <Zap size={20} className="text-yellow-400" />
+                  {result.consequences.energyMegatons.toFixed(0)} MT
+                </div>
+                <div className="text-slate-500 text-xs mt-1">TNT equivalent</div>
+              </div>
+
+              <div className="bg-slate-900 p-4 rounded-lg">
+                <div className="text-slate-400 text-sm mb-1">Fireball Radius</div>
+                <div className="text-orange-400 text-xl font-bold flex items-center gap-2">
+                  <Flame size={20} />
+                  {result.consequences.fireballRadius} km
+                </div>
+                <div className="text-slate-500 text-xs mt-1">Complete vaporization</div>
+              </div>
+
+              <div className="bg-slate-900 p-4 rounded-lg">
+                <div className="text-slate-400 text-sm mb-1">Earthquake</div>
+                <div className="text-red-400 text-xl font-bold">
+                  {result.consequences.earthquakeMagnitude.toFixed(1)}
+                </div>
+                <div className="text-slate-500 text-xs mt-1">Richter scale</div>
+              </div>
+
+              {result.locationType === 'ocean' ? (
+                <>
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Initial Tsunami</div>
+                    <div className="text-blue-400 text-xl font-bold flex items-center gap-2">
+                      <Waves size={20} />
+                      {result.consequences.tsunamiInitialHeight} m
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">At impact point</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Coastal Wave</div>
+                    <div className="text-blue-400 text-xl font-bold">
+                      {result.consequences.tsunamiCoastalHeight} m
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">20-50x amplified</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Inundation</div>
+                    <div className="text-blue-400 text-xl font-bold">
+                      {result.consequences.coastalInundation} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">Inland flooding</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Crater Size</div>
+                    <div className="text-orange-400 text-xl font-bold flex items-center gap-2">
+                      <Skull size={20} />
+                      {result.consequences.craterDiameter.toFixed(1)} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">
+                      {result.consequences.craterDepth.toFixed(0)}m deep
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Severe Damage</div>
+                    <div className="text-red-400 text-xl font-bold">
+                      {result.consequences.severeDamageRadius} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">100% fatalities</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Moderate Damage</div>
+                    <div className="text-orange-400 text-xl font-bold">
+                      {result.consequences.moderateDamageRadius} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">Building collapse</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Destroyed Area</div>
+                    <div className="text-red-400 text-xl font-bold">
+                      {result.consequences.affectedArea.toFixed(0)} km²
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">Complete destruction</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Ejecta Blanket</div>
+                    <div className="text-orange-400 text-xl font-bold">
+                      {result.consequences.ejectaBlanket.toFixed(0)} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">Debris radius</div>
+                  </div>
+
+                  <div className="bg-slate-900 p-4 rounded-lg">
+                    <div className="text-slate-400 text-sm mb-1">Felt Radius</div>
+                    <div className="text-yellow-400 text-xl font-bold">
+                      {result.consequences.feltRadius} km
+                    </div>
+                    <div className="text-slate-500 text-xs mt-1">Seismic shaking</div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-
-        {result.willImpact && (
-          <>
-            <div className="bg-slate-900 p-4 rounded-lg">
-              <div className="text-slate-400 text-sm mb-1">Crater Diameter</div>
-              <div className="text-white text-xl font-bold flex items-center gap-2">
-                <Skull size={20} className="text-orange-400" />
-                {result.craterDiameter.toFixed(1)} km
-              </div>
-              <div className="text-slate-500 text-xs mt-1">
-                {(result.craterDiameter * 1000).toFixed(0)} meters
-              </div>
-            </div>
-
-            <div className="bg-slate-900 p-4 rounded-lg col-span-2 md:col-span-3">
-              <div className="text-slate-400 text-sm mb-1">Destruction Radius</div>
-              <div className="text-red-400 text-xl font-bold">
-                {result.destructionRadius.toFixed(0)} km
-              </div>
-              <div className="text-slate-500 text-xs mt-1">
-                Area of severe damage and blast effects
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      )}
 
       <div className="space-y-3">
         <h4 className="text-white font-semibold flex items-center gap-2">
@@ -93,7 +193,7 @@ export default function ImpactResults({ result }: ImpactResultsProps) {
         {result.details.map((detail, index) => (
           <div
             key={index}
-            className="bg-slate-900 p-3 rounded border-l-4 border-blue-500 text-slate-300"
+            className="bg-slate-900 p-3 rounded border-l-4 border-blue-500 text-slate-300 text-sm"
           >
             {detail}
           </div>
@@ -101,21 +201,44 @@ export default function ImpactResults({ result }: ImpactResultsProps) {
       </div>
 
       {!result.willImpact && (
-        <div className="mt-6 p-4 bg-blue-900/20 border border-blue-700 rounded-lg">
-          <p className="text-blue-300 text-sm">
-            <strong>Scientific Note:</strong> This deflection demonstrates the principle behind NASA's DART mission,
-            which successfully altered asteroid Dimorphos's orbit in 2022. Early detection and small velocity changes
-            can prevent catastrophic impacts through accumulated trajectory changes over time.
+        <div className="mt-6 p-4 bg-green-900/20 border border-green-700 rounded-lg">
+          <p className="text-green-300 text-sm">
+            <strong>Deflection Success:</strong> This demonstrates the principle behind NASA's DART mission,
+            which successfully altered asteroid Dimorphos's orbit in 2022. Early detection combined with
+            sufficient warning time allows small velocity changes to prevent catastrophic impacts.
           </p>
         </div>
       )}
 
-      {result.willImpact && megatons > 10000 && (
+      {result.willImpact && (
         <div className="mt-6 p-4 bg-red-900/20 border border-red-700 rounded-lg">
+          <div className="mb-4">
+            <h5 className="text-red-400 font-semibold mb-2">Environmental Effects Timeline</h5>
+            <div className="space-y-2 text-sm text-slate-300">
+              <div>
+                <span className="text-red-400 font-bold">Immediate (1-6 months):</span> Dust cloud formation,
+                global temperature drop begins
+              </div>
+              <div>
+                <span className="text-red-400 font-bold">Short-term (6-24 months):</span> Maximum cooling effect,
+                agricultural disruption
+              </div>
+              <div>
+                <span className="text-orange-400 font-bold">Medium-term (2-5 years):</span> Gradual atmospheric
+                clearing, partial recovery
+              </div>
+              <div>
+                <span className="text-yellow-400 font-bold">Long-term (5-10 years):</span> Return to normal
+                climate conditions
+              </div>
+            </div>
+          </div>
           <p className="text-red-300 text-sm">
-            <strong>Extinction Warning:</strong> An impact of this magnitude would cause global climate disruption,
-            mass extinctions, and the collapse of human civilization. This scenario underscores why planetary defense
-            is critical - early detection and deflection missions are humanity's best defense against cosmic threats.
+            <strong>Regional Catastrophe:</strong> An impact of this magnitude would cause widespread devastation
+            across the affected region. This scenario underscores why planetary defense is critical - early detection
+            and timely deflection missions are humanity's best defense against cosmic threats. With a miss distance of just
+            {Math.abs(result.missDistance).toFixed(0)} km (required: 2,500 km), more deflection force or earlier
+            intervention would have prevented this catastrophe.
           </p>
         </div>
       )}
