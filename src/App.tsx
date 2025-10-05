@@ -62,6 +62,14 @@ function App() {
           {activeTab === 'land' && <LandImpact />}
           {activeTab === 'ocean' && <OceanImpact />}
         </main>
+
+        <footer className="mt-12 mb-6 text-center">
+          <div className="border-t border-slate-700 pt-6">
+            <p className="text-slate-400 text-sm">
+              Developed by <span className="text-slate-300 font-semibold">Tereza Gorgolova</span>
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
