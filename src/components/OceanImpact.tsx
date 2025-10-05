@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Waves, Flame, Ship, AlertTriangle, Wind, Droplets, Play, RotateCcw } from 'lucide-react';
 
 export default function OceanImpact() {
   const [showResults, setShowResults] = useState(false);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const handleRunSimulation = () => {
+    setShowResults(true);
+    setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={topRef}>
       <div className="bg-blue-900/30 border-2 border-blue-700 rounded-lg p-6">
         <div className="flex items-center gap-3 mb-4">
           <Waves className="text-blue-500" size={32} />
@@ -29,7 +37,7 @@ export default function OceanImpact() {
             including tsunami formation, wave propagation, and coastal devastation.
           </p>
           <button
-            onClick={() => setShowResults(true)}
+            onClick={handleRunSimulation}
             className="flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-all transform hover:scale-105"
           >
             <Play size={24} />

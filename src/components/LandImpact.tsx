@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Flame, Skull, AlertTriangle, Mountain, Wind, TreeDeciduous, Play, RotateCcw } from 'lucide-react';
 
 export default function LandImpact() {
   const [showResults, setShowResults] = useState(false);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const handleRunSimulation = () => {
+    setShowResults(true);
+    setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={topRef}>
       <div className="bg-red-900/30 border-2 border-red-700 rounded-lg p-6">
         <div className="flex items-center gap-3 mb-4">
           <Mountain className="text-red-500" size={32} />
@@ -29,7 +37,7 @@ export default function LandImpact() {
             including destruction zones, crater formation, and environmental effects.
           </p>
           <button
-            onClick={() => setShowResults(true)}
+            onClick={handleRunSimulation}
             className="flex items-center gap-2 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-lg transition-all transform hover:scale-105"
           >
             <Play size={24} />
