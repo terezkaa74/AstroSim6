@@ -124,20 +124,10 @@ export function calculateDeflection(
   force: number,
   timeBeforeImpact: number
 ): number {
-  const mass = calculateMass(BENNU_DATA.diameter);
-
-  const acceleration = (force / 100) / mass;
+  const deltaV = force / 100;
   const timeSeconds = timeBeforeImpact * 365.25 * 24 * 3600;
-
-  const deltaV = acceleration * timeSeconds;
-
-  const semiMajorAxis = BENNU_DATA.orbit.semiMajorAxis * 1.496e8;
-  const orbitalPeriod = BENNU_DATA.orbit.period * 24 * 3600;
-
-  const lateralDisplacement = (deltaV * timeSeconds) / (2 * Math.PI * semiMajorAxis / orbitalPeriod);
-  const displacementKm = lateralDisplacement * semiMajorAxis;
-
-  return displacementKm;
+  const displacement = deltaV * timeSeconds;
+  return displacement / 1000;
 }
 
 export function simulateImpact(params: SimulationParams, timeBeforeImpact: number = 10): ImpactResult {
@@ -171,52 +161,30 @@ export function simulateImpact(params: SimulationParams, timeBeforeImpact: numbe
     };
   }
 
-  const isOceanImpact = Math.random() > 0.3;
-  const impactLocationType = isOceanImpact ? 'ocean' : 'inland';
-  const consequences = calculateImpactConsequences(impactEnergy, isOceanImpact);
+  const consequences = calculateImpactConsequences(impactEnergy, false);
 
-  if (isOceanImpact) {
-    outcome = `IMPACT EVENT - Deep Ocean Impact`;
-    details = [
-      `Location: Atlantic Ocean (33°N, 65°W) - between New York and Bermuda`,
-      `Water depth: 5,000 meters (abyssal plain)`,
-      `Total energy release: ${consequences.energyMegatons.toFixed(0)} megatons TNT (${(consequences.energyMegatons / 15).toFixed(0)}x Tsar Bomba)`,
-      `Fireball: ${consequences.fireballRadius.toFixed(1)} km radius - superheated steam explosion`,
-      `Underwater crater: ${consequences.craterDiameter.toFixed(1)} km diameter, ${(consequences.craterDepth * 1000).toFixed(0)} m deep`,
-      `Initial tsunami: ${consequences.tsunamiInitialHeight?.toFixed(0)} m wave height in deep water`,
-      `Coastal amplification: ${consequences.tsunamiCoastalHeight?.toFixed(1)} m waves hitting coastlines`,
-      `Inland flooding: ${consequences.coastalInundation?.toFixed(1)} km penetration into low-lying areas`,
-      `Wave arrival: New York City (2 hours), Caribbean (3-4 hours), Europe (6-8 hours)`,
-      `Seismic event: Magnitude ${consequences.earthquakeMagnitude.toFixed(1)} earthquake`,
-      `Global impact: Atmospheric water vapor, localized climate disruption`,
-      `Casualties: Potentially tens of millions along affected coastlines`
-    ];
-  } else {
-    outcome = `IMPACT EVENT - Inland Catastrophe`;
-    details = [
-      `Location: Central United States (40°N, 100°W) - Nebraska/Kansas border`,
-      `Total energy release: ${consequences.energyMegatons.toFixed(0)} megatons TNT (${(consequences.energyMegatons / 15).toFixed(0)}x Tsar Bomba)`,
-      `Fireball: ${consequences.fireballRadius.toFixed(1)} km radius - everything vaporized instantly`,
-      `Impact crater: ${consequences.craterDiameter.toFixed(1)} km diameter, ${(consequences.craterDepth * 1000).toFixed(0)} m deep`,
-      `Crater volume: ${((Math.PI / 3) * Math.pow(consequences.craterDiameter * 500, 2) * consequences.craterDepth * 1000 / 1e9).toFixed(1)} km³ of material displaced`,
-      `Air blast (20 psi): ${consequences.severeDamageRadius.toFixed(1)} km - reinforced buildings destroyed`,
-      `Air blast (1 psi): ${consequences.moderateDamageRadius.toFixed(1)} km - residential structures collapse`,
-      `Thermal radiation: ${consequences.vegetationIgnition?.toFixed(1)} km - third-degree burns, fires ignited`,
-      `Ejecta blanket: ${consequences.ejectaBlanket.toFixed(1)} km radius covered in molten rock and debris`,
-      `Ejecta depth: ${consequences.ejectedThickness10km?.toFixed(1)}m at 10km, ${consequences.ejectedThickness30km?.toFixed(1)}m at 30km`,
-      `Total destruction area: ${consequences.affectedArea.toFixed(0)} km² (larger than some US states)`,
-      `Seismic shock: Magnitude ${consequences.earthquakeMagnitude.toFixed(1)} felt ${consequences.feltRadius.toFixed(0)} km away`,
-      `Atmospheric effects: Dust cloud causing regional crop failure, potential "impact winter"`,
-      `Estimated casualties: Multiple millions within blast radius, tens of millions from secondary effects`
-    ];
-  }
+  outcome = `IMPACT EVENT - Catastrophic Impact`;
+  details = [
+    `Total energy release: ${consequences.energyMegatons.toFixed(0)} megatons TNT (${(consequences.energyMegatons / 15).toFixed(0)}x Tsar Bomba)`,
+    `Fireball: ${consequences.fireballRadius.toFixed(1)} km radius - everything vaporized instantly`,
+    `Impact crater: ${consequences.craterDiameter.toFixed(1)} km diameter, ${(consequences.craterDepth * 1000).toFixed(0)} m deep`,
+    `Crater volume: ${((Math.PI / 3) * Math.pow(consequences.craterDiameter * 500, 2) * consequences.craterDepth * 1000 / 1e9).toFixed(1)} km³ of material displaced`,
+    `Air blast (20 psi): ${consequences.severeDamageRadius.toFixed(1)} km - reinforced buildings destroyed`,
+    `Air blast (1 psi): ${consequences.moderateDamageRadius.toFixed(1)} km - residential structures collapse`,
+    `Thermal radiation: ${consequences.vegetationIgnition?.toFixed(1)} km - third-degree burns, fires ignited`,
+    `Ejecta blanket: ${consequences.ejectaBlanket.toFixed(1)} km radius covered in molten rock and debris`,
+    `Ejecta depth: ${consequences.ejectedThickness10km?.toFixed(1)}m at 10km, ${consequences.ejectedThickness30km?.toFixed(1)}m at 30km`,
+    `Total destruction area: ${consequences.affectedArea.toFixed(0)} km² (larger than many countries)`,
+    `Seismic shock: Magnitude ${consequences.earthquakeMagnitude.toFixed(1)} felt ${consequences.feltRadius.toFixed(0)} km away`,
+    `Atmospheric effects: Dust cloud causing regional crop failure, potential "impact winter"`,
+    `Estimated casualties: Millions within blast radius, tens of millions from secondary effects`
+  ];
 
   return {
     willImpact: true,
     missDistance: finalMissDistance,
     impactEnergy,
     consequences,
-    locationType: impactLocationType,
     outcome,
     details
   };
