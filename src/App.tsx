@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Activity, Mountain, Waves } from 'lucide-react';
 import RealisticSimulation from './components/RealisticSimulation';
 import LandImpact from './components/LandImpact';
@@ -6,12 +6,54 @@ import OceanImpact from './components/OceanImpact';
 
 type Tab = 'simulation' | 'land' | 'ocean';
 
+interface Star {
+  id: number;
+  left: string;
+  top: string;
+  size: 'small' | 'medium' | 'large';
+  duration: string;
+  delay: string;
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('simulation');
+  const [stars, setStars] = useState<Star[]>([]);
+
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars: Star[] = [];
+      for (let i = 0; i < 150; i++) {
+        const sizes: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
+        newStars.push({
+          id: i,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          size: sizes[Math.floor(Math.random() * sizes.length)],
+          duration: `${2 + Math.random() * 3}s`,
+          delay: `${Math.random() * 3}s`,
+        });
+      }
+      setStars(newStars);
+    };
+
+    generateStars();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-900 relative overflow-hidden">
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className={`star star-${star.size}`}
+          style={{
+            left: star.left,
+            top: star.top,
+            '--duration': star.duration,
+            '--delay': star.delay,
+          } as React.CSSProperties}
+        />
+      ))}
+      <div className="container mx-auto px-4 py-6 relative z-10">
         <header className="text-center mb-8">
           <h1 className="text-5xl font-bold text-white mb-2">
             AstroSim
